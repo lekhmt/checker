@@ -25,6 +25,13 @@ class TasksService(
 
     fun getTaskById(id: Long) = sql.findById(TaskView::class, id)!!
 
+    fun getSubmitById(id: Long) = sql.findById(SubmitView::class, id)!!
+
+    fun getTestsByTaskId(id: Long) = sql.createQuery(Test::class) {
+        where(table.task.id eq id)
+        select(table.fetch(TestView::class))
+    }.execute()
+
     fun getSubmitsBySubjectId(id: Long) = sql.createQuery(Submit::class) {
         where(table.task.subject.id eq id)
         select(table.fetch(SubmitView::class))
@@ -89,6 +96,16 @@ class TasksService(
             isSingleFile = submit.isSingleFile
             compiler = submit.compiler
             submitStatus = submit.submitStatus
+        }).modifiedEntity.id
+    }
+
+    fun saveTest(test: TestInput): Long {
+        return sql.save(new(Test::class).by {
+            task {
+                id = test.task.id!!
+            }
+            input = test.input
+            output = test.output
         }).modifiedEntity.id
     }
 

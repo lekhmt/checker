@@ -13,8 +13,8 @@ interface Test : LongIdFragment {
     @ManyToOne
     val task: Task
 
-    val input: File
+    val input: ByteArray
 
-    val output: File
+    val output: ByteArray
 
 }

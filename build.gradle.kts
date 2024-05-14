@@ -42,6 +42,8 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
+	implementation("commons-io:commons-io:2.6")
+
 
 	implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:${jimmerVersion}")
 	implementation("org.babyfish.jimmer:jimmer-core-kotlin:${jimmerVersion}")

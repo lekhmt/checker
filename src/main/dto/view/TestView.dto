@@ -1,0 +1,6 @@
+export com.example.checker.entity.tasks.Test
+    -> package com.example.checker.entity.dto
+
+TestView {
+    #allScalars
+}

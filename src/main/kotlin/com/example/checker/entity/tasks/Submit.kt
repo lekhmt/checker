@@ -3,10 +3,10 @@ package com.example.checker.entity.tasks
 import com.example.checker.entity.fragments.LongIdFragment
 import com.example.checker.entity.users.User
 import org.babyfish.jimmer.kt.ImmutableCompanion
+import org.babyfish.jimmer.sql.Column
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.ManyToOne
 import org.babyfish.jimmer.sql.Table
-import java.io.File
 import java.time.Instant
 
 @Entity
@@ -21,7 +21,8 @@ interface Submit : LongIdFragment {
 
     val submittedAt: Instant
 
-    val code: File
+    @Column
+    val code: ByteArray
 
     val isSingleFile: Boolean
 
@@ -35,14 +36,45 @@ interface Submit : LongIdFragment {
 
 enum class Compiler(
     val description: String,
-    val compileCommand: String,
+    val compileCommands: List<String>? = null,
+    val runCommands: List<String>,
+    val submitFileName: String
 ) {
-    GPP_14("GNU G++14", "gcc -std=c++14"),
-    GPP_17("GNU G++17", "gcc -std=c++17"),
-    GPP_20("GNU G++20", "gcc -std=c++20"),
-    JAVA_8("Java 8", "javac -source 8 -target 8"),
-    JAVA_21("Java 21", "javac -source 21 -target 21"),
-    PYTHON3("Python", "python3")
+    GPP_14(
+        description = "GNU G++14",
+        compileCommands = listOf("gcc", "-std=c++14"),
+        runCommands = listOf("./a.out"),
+        submitFileName = "main.cpp",
+    ),
+    GPP_17(
+        description = "GNU G++17",
+        compileCommands = listOf("gcc", "-std=c++17"),
+        runCommands = listOf("./a.out"),
+        submitFileName = "main.cpp",
+    ),
+    GPP_20(
+        description = "GNU G++20",
+        compileCommands = listOf("gcc", "-std=c++20"),
+        runCommands = listOf("./a.out"),
+        submitFileName = "main.cpp",
+    ),
+    JAVA_8(
+        description = "Java 8",
+        compileCommands = listOf("javac", "-source", "8", "-target", "8", "Main.java"),
+        runCommands = listOf("java", "-classpath", ".", "Main"),
+        submitFileName = "Main.java"
+    ),
+    JAVA_21(
+        description = "Java 21",
+        compileCommands = listOf("javac", "-source", "21", "-target", "21", "Main.java"),
+        runCommands = listOf("java", "-classpath", ".", "Main"),
+        submitFileName = "Main.java"
+    ),
+    PYTHON3(
+        description = "Python",
+        runCommands = listOf("python3", "main.py"),
+        submitFileName = "main.py"
+    )
 }
 
 enum class SubmitStatus(val description: String) {

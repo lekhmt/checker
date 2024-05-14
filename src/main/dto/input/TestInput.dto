@@ -1,0 +1,10 @@
+export com.example.checker.entity.tasks.Test
+    -> package com.example.checker.entity.dto
+
+input TestInput {
+    #allScalars
+    -id
+    task {
+        id
+    }
+}

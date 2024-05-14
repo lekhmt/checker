@@ -1,11 +1,13 @@
 package com.example.checker.datainit
 
+import com.example.checker.configuration.findAll
 import com.example.checker.entity.dto.*
 import com.example.checker.entity.tasks.Compiler
 import com.example.checker.entity.tasks.Compiler.*
 import com.example.checker.entity.tasks.SubmitStatus
 import com.example.checker.entity.tasks.SubmitStatus.*
 import com.example.checker.entity.users.Role
+import com.example.checker.service.RunnerService
 import com.example.checker.service.StudentGroupService
 import com.example.checker.service.TasksService
 import com.example.checker.service.UserService
@@ -25,6 +27,7 @@ class DataInit(
     private val userService: UserService,
     private val studentGroupService: StudentGroupService,
     private val tasksService: TasksService,
+    private val runnerService: RunnerService,
     private val sql: KSqlClient,
 ) : CommandLineRunner {
 
@@ -97,7 +100,7 @@ class DataInit(
             1,
             "ivanov@mai.ru",
             Instant.now().minus(6, DAYS),
-            File("src/main/resources/files/empty-file.txt"),
+            File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
             ACCEPTED
@@ -106,29 +109,60 @@ class DataInit(
             2,
             "ivanov@mai.ru",
             Instant.now().minus(1, DAYS),
-            File("src/main/resources/files/empty-file.txt"),
+            File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
             TIME_LIMIT
         )
-        createSubmit(
+        val submitId = createSubmit(
             1,
             "stepanov@mai.ru",
             Instant.now().minus(8, DAYS),
-            File("src/main/resources/files/empty-file.txt"),
+            File("src/main/resources/files/example.py").readBytes(),
             true,
-            GPP_20,
-            COMPILATION_ERROR
+            PYTHON3,
+            TESTING
         )
         createSubmit(
             3,
             "stepanov@mai.ru",
             Instant.now().minus(12, DAYS),
-            File("src/main/resources/files/empty-file.txt"),
+            File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
             ACCEPTED
         )
+        createSubmit(
+            1,
+            "stepanov@mai.ru",
+            Instant.now().minus(12, DAYS),
+            File("src/main/resources/files/example.cpp").readBytes(),
+            true,
+            GPP_20,
+            TESTING
+        )
+        createSubmit(
+            1,
+            "stepanov@mai.ru",
+            Instant.now().minus(12, DAYS),
+            File("src/main/resources/files/example.java").readBytes(),
+            true,
+            JAVA_21,
+            TESTING
+        )
+
+        createTest(
+            1,
+            File("src/main/resources/files/in_1.txt").readBytes(),
+            File("src/main/resources/files/out_1.txt").readBytes(),
+        )
+        createTest(
+            1,
+            File("src/main/resources/files/in_2.txt").readBytes(),
+            File("src/main/resources/files/out_2.txt").readBytes(),
+        )
+
+        runnerService.testSubmit(submitId)
     }
 
     private fun createGroup(
@@ -205,7 +239,7 @@ class DataInit(
         task: Long,
         student: String,
         submittedAt: Instant,
-        code: File,
+        code: ByteArray,
         isSingleFile: Boolean,
         compiler: Compiler,
         status: SubmitStatus,
@@ -215,5 +249,11 @@ class DataInit(
             submittedAt, code, isSingleFile, compiler, status
         )
     )
+
+    private fun createTest(
+        task: Long,
+        input: ByteArray,
+        output: ByteArray,
+    ) = tasksService.saveTest(TestInput(input, output, TestInput.TargetOf_task(task)))
 
 }

@@ -3,7 +3,6 @@ export com.example.checker.entity.tasks.Submit
 
 SubmitView {
     #allScalars
-    -code
     task {
         id
         displayName
