@@ -1,0 +1,8 @@
+export com.example.checker.entity.users.StudentGroup
+    -> package com.example.checker.entity.dto
+
+input StudentGroupInput {
+    name
+    course
+    institute
+}

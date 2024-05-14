@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${task.displayName}"></title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <style>
+        body {
+            display: grid;
+        }
+         .container {
+            display: flex;
+            align-items: start;
+            margin: 10px 5% 0 5%;
+        }
+        .main {
+            width: 50%;
+            display: grid;
+            align-items: start;
+        }
+        .submit {
+            width: 50%;
+        }
+        span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .task-name {
+            font-size: 30px;
+        }
+        .description-block {
+            margin: 10px 10px 10px 0px;
+            display: grid;
+        }
+        .description-title {
+            font-size: 24px;
+            margin: 0 0 5px 0;
+        }
+        .submit-form {
+            margin: 10px 0 0 0;
+            display: grid;
+        }
+        .buttons {
+            margin: 10px 0 0 0;
+        }
+        button {
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-input {
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .back {
+            margin-top: 70px;
+            margin-left: 5%;
+        }
+        .submits-table {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="general.html :: header"/>
+<a class="back" th:href="@{/portal/subjects/} + ${subject.id}">Назад к списку работ</a>
+<div class="container">
+    <div class="main">
+        <span class="task-name" th:text="${task.displayName}"></span>
+        <div th:if="${task.goal} != null" class="description-block">
+            <span class="description-title">Цель работы</span>
+            <div th:text="${task.goal}"></div>
+        </div>
+        <div class="description-block">
+            <span class="description-title">Описание</span>
+            <div th:text="${task.description}"></div>
+        </div>
+        <div th:if="${task.inputDescription} != null" class="description-block">
+            <span class="description-title">Входные данные</span>
+            <div th:text="${task.inputDescription}"></div>
+        </div>
+        <div th:if="${task.outputDescription} != null" class="description-block">
+            <span class="description-title">Выходные данные</span>
+            <div th:text="${task.outputDescription}"></div>
+        </div>
+    </div>
+    <div class="submit">
+        <span class="description-title">Отправить на проверку</span>
+        <div class="submit-form">
+            <textarea rows="20"></textarea>
+        </div>
+        <div class="buttons">
+            <button type="submit">Отправить код</button>
+            или
+            <label class="custom-input">
+                Выберите файл
+                <input type="file"/>
+            </label>
+        </div>
+        <div class="submits-table">
+            <span>Список посылок</span>
+            <table>
+                <tr>
+                    <th style="width:30%">Студент</th>
+                    <th style="width:30%">Работа</th>
+                    <th style="width:20%">Время посылки</th>
+                    <th style="width:20%">Статус</th>
+                </tr>
+                <tr th:each="submit: ${submits}">
+                    <td><a th:href="@{/login}" th:text="${submit.student.fullName}"/></td>
+                    <td><a th:href="@{/portal/subjects/} + ${subjectId} + '/' + ${submit.task.id}" th:text="${submit.task.displayName}"/></td>
+                    <td th:text="${#temporals.format(submit.submittedAt, 'dd-MM-yyyy hh:mm')}"/>
+                    <th:block th:switch="${submit.submitStatus.name}">
+                        <td th:case="'NOT_DONE'" th:text="${submit.submitStatus.description}"/>
+                        <td th:case="'TESTING'" th:text="${submit.submitStatus.description}"/>
+                        <td th:case="'ACCEPTED'" th:text="${submit.submitStatus.description}" style="color: #2ebf55;"/>
+                        <td th:case="'WRONG_ANSWER'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                        <td th:case="'TIME_LIMIT'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                        <td th:case="'MEMORY_LIMIT'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                        <td th:case="'RUNTIME_ERROR'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                        <td th:case="'COMPILATION_ERROR'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                    </th:block>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

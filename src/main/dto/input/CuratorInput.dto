@@ -1,0 +1,12 @@
+export com.example.checker.entity.users.Curator
+    -> package com.example.checker.entity.dto
+
+input CuratorInput {
+    user {
+        #allScalars
+        -id
+    }
+    groups? {
+        name
+    }
+}

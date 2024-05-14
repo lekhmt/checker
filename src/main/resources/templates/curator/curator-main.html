@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница преподавателя</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <style>
+        .main {
+            width: 90%;
+            margin-top: 100px;
+            margin-left: 5%;
+            display: flex;
+        }
+        .groups-table {
+            width: 48%;
+        }
+        .subjects-table {
+            width: 48%;
+            margin-left: 4%;
+        }
+        span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="general.html :: header"/>
+<div class="main">
+    <div class="groups-table">
+        <span>Список групп</span>
+        <table>
+            <tr>
+                <th style="width:70%">Название</th>
+                <th style="width:15%">Курс</th>
+                <th style="width:15%">Институт</th>
+            </tr>
+            <tr th:each="group: ${groups}">
+                <td><a th:href="@{/groups/${group.name}}" th:text="${group.name}"/></td>
+                <td th:text="${group.course}"/>
+                <td th:text="${group.institute}"/>
+            </tr>
+        </table>
+    </div>
+    <div class="subjects-table">
+        <span>Список предметов</span>
+        <table>
+            <tr>
+                <th style="width:30%">Название</th>
+                <th style="width:70%">Описание</th>
+            </tr>
+            <tr th:each="subject: ${subjects}">
+                <td><a th:href="@{/portal/subjects/} + ${subject.id}" th:text="${subject.name}"/></td>
+                <td th:text="${subject.description}"/>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

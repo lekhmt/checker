@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Curator page</title>
+</head>
+<body>
+<div th:fragment="header" class="header">
+    <div th:text="${fullName}" class="fullName">Full Name</div>
+    <a th:href="@{/logout}" class="logout">Выйти</a>
+</div>
+</body>
+</html>

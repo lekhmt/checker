@@ -1,0 +1,6 @@
+export com.example.checker.entity.users.User
+    -> package com.example.checker.entity.dto
+
+UserView {
+    #allScalars
+}

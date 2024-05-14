@@ -1,0 +1,12 @@
+export com.example.checker.entity.users.Student
+    -> package com.example.checker.entity.dto
+
+input StudentInput {
+    user {
+        #allScalars
+        -id
+    }
+    group {
+        name
+    }
+}

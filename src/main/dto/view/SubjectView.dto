@@ -1,0 +1,18 @@
+export com.example.checker.entity.tasks.Subject
+    -> package com.example.checker.entity.dto
+
+SubjectView {
+    #allScalars
+    groups {
+        name
+    }
+    curators {
+        user {
+            fullName
+            email
+        }
+    }
+    tasks {
+        displayName
+    }
+}

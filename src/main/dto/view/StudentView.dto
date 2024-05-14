@@ -1,0 +1,12 @@
+export com.example.checker.entity.users.Student
+    -> package com.example.checker.entity.dto
+
+StudenView {
+    user {
+       fullName
+       email
+    }
+    group {
+        name
+    }
+}

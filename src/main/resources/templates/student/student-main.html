@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница студента</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <style>
+        .main {
+            width: 90%;
+            margin-top: 100px;
+            margin-left: 5%;
+            display: flex;
+        }
+        .subjects-table {
+            width: 48%;
+        }
+        .tasks-table {
+            width: 48%;
+            margin-left: 4%;
+        }
+        span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="general.html :: header"/>
+<div class="main">
+    <div class="subjects-table">
+        <span>Список предметов</span>
+        <table>
+            <tr>
+                <th style="width:30%">Название</th>
+                <th style="width:70%">Описание</th>
+            </tr>
+            <tr th:each="subject: ${subjects}">
+                <td><a th:href="@{/portal/subjects/} + ${subject.id}" th:text="${subject.name}"/></td>
+                <td th:text="${subject.description}"/>
+            </tr>
+        </table>
+    </div>
+    <div class="tasks-table">
+        <span>Список лабораторных работ</span>
+        <table>
+            <tr>
+                <th style="width:20%">Название</th>
+                <th style="width:20%">Предмет</th>
+                <th style="width:15%">Лимит по времени</th>
+                <th style="width:15%">Лимит по памяти</th>
+                <th style="width:15%">Выдана</th>
+                <th style="width:15%">Дата закрытия</th>
+            </tr>
+            <tr th:each="task: ${tasks}">
+                <td><a th:href="@{/portal/subjects/} + ${task.subject.id} + '/' + ${task.id}" th:text="${task.displayName}"/></td>
+                <td><a th:href="@{/portal/subjects/} + ${task.subject.id}" th:text="${task.subject.name}"/></td>
+                <td th:text="${task.timeLimit != null} ? ${task.timeLimit} + ' с' : '-'"/>
+                <td th:text="${task.memoryLimit != null} ? ${task.memoryLimit} + ' Мб' : '-'"/>
+                <td th:text="${#temporals.format(task.visibleFrom, 'dd-MM-yyyy')}"/>
+                <td th:text="${task.dueTo != null} ? ${#temporals.format(task.dueTo, 'dd-MM-yyyy')} : '-'"/>
+            </tr>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

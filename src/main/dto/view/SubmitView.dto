@@ -1,0 +1,20 @@
+export com.example.checker.entity.tasks.Submit
+    -> package com.example.checker.entity.dto
+
+SubmitView {
+    #allScalars
+    -code
+    task {
+        id
+        displayName
+        subject {
+            id
+            name
+        }
+    }
+    student {
+        id
+        fullName
+        email
+    }
+}

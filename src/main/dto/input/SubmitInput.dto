@@ -1,0 +1,16 @@
+export com.example.checker.entity.tasks.Submit
+    -> package com.example.checker.entity.dto
+
+input SubmitInput {
+    task {
+        id
+    }
+    student {
+        email
+    }
+    submittedAt
+    code
+    isSingleFile
+    compiler
+    submitStatus
+}

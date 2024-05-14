@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${subjectName}"></title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <style>
+        .main {
+            width: 90%;
+            margin-top: 100px;
+            margin-left: 5%;
+            display: flex;
+        }
+        .subjects-table {
+            width: 48%;
+        }
+        .submits-table {
+            width: 48%;
+            margin-left: 4%;
+        }
+        span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="general.html :: header"/>
+<div class="main">
+    <div class="subjects-table">
+        <span>Список лабораторных работ по предмету <span th:text="${subjectName}"></span></span>
+        <table>
+            <tr>
+                <th style="width:40%">Название</th>
+                <th style="width:15%">Лимит по времени</th>
+                <th style="width:15%">Лимит по памяти</th>
+                <th style="width:15%">Выдана</th>
+                <th style="width:15%">Дата закрытия</th>
+            </tr>
+            <tr th:each="task: ${tasks}">
+                <td><a th:href="@{/portal/subjects/} + ${subjectId} + '/' + ${task.id}" th:text="${task.displayName}"/></td>
+                <td th:text="${task.timeLimit != null} ? ${task.timeLimit} + ' с' : '-'"/>
+                <td th:text="${task.memoryLimit != null} ? ${task.memoryLimit} + ' Мб' : '-'"/>
+                <td th:text="${#temporals.format(task.visibleFrom, 'dd-MM-yyyy')}"/>
+                <td th:text="${task.dueTo != null} ? ${#temporals.format(task.dueTo, 'dd-MM-yyyy')} : '-'"/>
+            </tr>
+        </table>
+    </div>
+    <div class="submits-table">
+        <span>Список посылок</span>
+        <table>
+            <tr>
+                <th style="width:30%">Студент</th>
+                <th style="width:30%">Работа</th>
+                <th style="width:20%">Время посылки</th>
+                <th style="width:20%">Статус</th>
+            </tr>
+            <tr th:each="submit: ${submits}">
+                <td><a th:href="@{/login}" th:text="${submit.student.fullName}"/></td>
+                <td><a th:href="@{/portal/subjects/} + ${subjectId} + '/' + ${submit.task.id}" th:text="${submit.task.displayName}"/></td>
+                <td th:text="${#temporals.format(submit.submittedAt, 'dd-MM-yyyy hh:mm')}"/>
+                <th:block th:switch="${submit.submitStatus.name}">
+                    <td th:case="'NOT_DONE'" th:text="${submit.submitStatus.description}"/>
+                    <td th:case="'TESTING'" th:text="${submit.submitStatus.description}"/>
+                    <td th:case="'ACCEPTED'" th:text="${submit.submitStatus.description}" style="color: #2ebf55;"/>
+                    <td th:case="'WRONG_ANSWER'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                    <td th:case="'TIME_LIMIT'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                    <td th:case="'MEMORY_LIMIT'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                    <td th:case="'RUNTIME_ERROR'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                    <td th:case="'COMPILATION_ERROR'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                </th:block>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

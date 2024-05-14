@@ -1,0 +1,15 @@
+export com.example.checker.entity.tasks.Subject
+    -> package com.example.checker.entity.dto
+
+input SubjectInput {
+    name
+    description
+    groups? {
+        name
+    }
+    curators? {
+        user {
+            email
+        }
+    }
+}

@@ -1,0 +1,16 @@
+export com.example.checker.entity.users.StudentGroup
+    -> package com.example.checker.entity.dto
+
+StudentGroupView {
+    #allScalars
+    students {
+        user {
+            fullName
+            email
+        }
+    }
+    subjects {
+        name
+        description
+    }
+}

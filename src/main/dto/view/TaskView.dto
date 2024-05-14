@@ -1,0 +1,11 @@
+export com.example.checker.entity.tasks.Task
+    -> package com.example.checker.entity.dto
+
+TaskView {
+    #allScalars
+    subject {
+        id
+        name
+        description
+    }
+}

@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: checker
+  security:
+    name: test-user
+    password: test-user
+  datasource:
+#    url=jdbc:postgresql://localhost:32771/postgres
+    url: jdbc:h2:mem:test
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /console/
+
+jimmer:
+  language: kotlin
+  show-sql: true
+  pretty-sql: true
+  client:
+    openapi:
+      path: /openapi.yaml
+      ui-path: /openapi.html
+      properties:
+        info:
+          title: Code checker
+          description: Web interface for requests
+          version: 0.1
+
+flyway:
+  user: test-user
+  url: jdbc:h2:mem:test
+  locations: db.migration
+  validateMigrationNaming: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
