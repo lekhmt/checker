@@ -1,15 +1,18 @@
 package com.example.checker.runner
 
+import com.example.checker.service.RunnerService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
 @Component
-class runner : CommandLineRunner {
+class Runner(
+    val runnerService: RunnerService,
+    @Value("\${source}") private val sourceDirectory: String,
+) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
-        val process = ProcessBuilder("g++", "--version").start()
-        process.waitFor()
-        val result = process.inputReader().lines().toList()
+        val result = runnerService.runCommand("ls -l $sourceDirectory")
         println("****************************************\n ${result} \n ****************************************")
     }
 

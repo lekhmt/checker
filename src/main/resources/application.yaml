@@ -38,3 +38,5 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+source: classpath

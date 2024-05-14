@@ -34,12 +34,6 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-common:2.5.0")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.5")
-
-
-
-	implementation(kotlin("stdlib-jdk8"))
-
-
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
@@ -56,10 +50,4 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-}
-kotlin {
-	jvmToolchain(17)
-	sourceSets.main {
-		kotlin.srcDir("build/generated/ksp/main/kotlin")
-	}
 }

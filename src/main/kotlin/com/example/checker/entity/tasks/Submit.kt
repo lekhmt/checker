@@ -33,12 +33,16 @@ interface Submit : LongIdFragment {
 
 }
 
-enum class Compiler(val description: String) {
-    GPP_14("GNU G++14"),
-    GPP_17("GNU G++17"),
-    GPP_20("GNU G++20"),
-    JAVA_8("Java 8"),
-    JAVA_21("Java 21"),
+enum class Compiler(
+    val description: String,
+    val compileCommand: String,
+) {
+    GPP_14("GNU G++14", "gcc -std=c++14"),
+    GPP_17("GNU G++17", "gcc -std=c++17"),
+    GPP_20("GNU G++20", "gcc -std=c++20"),
+    JAVA_8("Java 8", "javac -source 8 -target 8"),
+    JAVA_21("Java 21", "javac -source 21 -target 21"),
+    PYTHON3("Python", "python3")
 }
 
 enum class SubmitStatus(val description: String) {
