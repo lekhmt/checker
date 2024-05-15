@@ -109,4 +109,14 @@ class TasksService(
         }).modifiedEntity.id
     }
 
+    fun updateSubmitStatus(
+        id: Long,
+        status: SubmitStatus,
+        message: String? = null,
+    ) = sql.update(Submit {
+        this.id = id
+        this.submitStatus = status
+        this.message = message
+    })
+
 }

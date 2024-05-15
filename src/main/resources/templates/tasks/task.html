@@ -71,6 +71,10 @@
             width: 100%;
             margin-top: 10px;
         }
+        select {
+            padding: 5px;
+            margin: 0 0 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -97,18 +101,37 @@
         </div>
     </div>
     <div class="submit">
-        <span class="description-title">Отправить на проверку</span>
-        <div class="submit-form">
-            <textarea rows="20"></textarea>
-        </div>
-        <div class="buttons">
-            <button type="submit">Отправить код</button>
-            или
-            <label class="custom-input">
-                Выберите файл
-                <input type="file"/>
-            </label>
-        </div>
+        <form
+                action="#" th:action="@{/portal/subjects/} + ${subject.id} + '/' + ${task.id}"
+                th:object="${studentCodeSubmit}"
+                method="post"
+        >
+            <span class="description-title">Отправить на проверку</span>
+            <div class="submit-form">
+                <textarea th:field="*{code}" rows="20"></textarea>
+            </div>
+            <span class="error" th:if="${compilerNotPicked}">Не выбран компилятор</span>
+            <span class="error" th:if="${codeNotProvided}">Пустой код программы</span>
+            <div class="buttons">
+                <select
+                        id="compiler"
+                        name="compiler"
+                >
+                    <option disabled selected>Выбрать</option>
+                    <option
+                            th:each="compiler: ${compilers}"
+                            th:value="${compiler.name}"
+                            th:text="${compiler.description}"
+                    />
+                </select>
+                <button type="submit">Отправить код</button>
+                <!--            или-->
+                <!--            <label class="custom-input">-->
+                <!--                Выберите файл-->
+                <!--                <input type="file"/>-->
+                <!--            </label>-->
+            </div>
+        </form>
         <div class="submits-table">
             <span>Список посылок</span>
             <table>
@@ -120,17 +143,33 @@
                 </tr>
                 <tr th:each="submit: ${submits}">
                     <td><a th:href="@{/login}" th:text="${submit.student.fullName}"/></td>
-                    <td><a th:href="@{/portal/subjects/} + ${subjectId} + '/' + ${submit.task.id}" th:text="${submit.task.displayName}"/></td>
+                    <td><a th:href="@{/portal/subjects/} + ${subjectId} + '/' + ${submit.task.id}"
+                           th:text="${submit.task.displayName}"/></td>
                     <td th:text="${#temporals.format(submit.submittedAt, 'dd-MM-yyyy hh:mm')}"/>
                     <th:block th:switch="${submit.submitStatus.name}">
                         <td th:case="'NOT_DONE'" th:text="${submit.submitStatus.description}"/>
                         <td th:case="'TESTING'" th:text="${submit.submitStatus.description}"/>
                         <td th:case="'ACCEPTED'" th:text="${submit.submitStatus.description}" style="color: #2ebf55;"/>
-                        <td th:case="'WRONG_ANSWER'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
-                        <td th:case="'TIME_LIMIT'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
-                        <td th:case="'MEMORY_LIMIT'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
-                        <td th:case="'RUNTIME_ERROR'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
-                        <td th:case="'COMPILATION_ERROR'" th:text="${submit.submitStatus.description}" style="color: #e81313;"/>
+                        <td th:case="'WRONG_ANSWER'" th:text="${submit.submitStatus.description}"
+                            style="color: #e81313;"/>
+                        <td th:case="'TIME_LIMIT'" th:text="${submit.submitStatus.description}"
+                            style="color: #e81313;"/>
+                        <td th:case="'MEMORY_LIMIT'" th:text="${submit.submitStatus.description}"
+                            style="color: #e81313;"/>
+                        <td th:case="'RUNTIME_ERROR'">
+                            <a
+                                    th:href="@{/portal/submits/} + ${submit.id}"
+                                    th:text="${submit.submitStatus.description}"
+                                    style="color: #e81313; text-decoration: underline;"
+                            />
+                        </td>
+                        <td th:case="'COMPILATION_ERROR'">
+                            <a
+                                    th:href="@{/portal/submits/} + ${submit.id}"
+                                    th:text="${submit.submitStatus.description}"
+                                    style="color: #e81313; text-decoration: underline;"
+                            />
+                        </td>
                     </th:block>
                 </tr>
             </table>

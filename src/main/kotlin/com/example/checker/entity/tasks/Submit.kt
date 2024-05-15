@@ -2,6 +2,7 @@ package com.example.checker.entity.tasks
 
 import com.example.checker.entity.fragments.LongIdFragment
 import com.example.checker.entity.users.User
+import jakarta.validation.constraints.NotEmpty
 import org.babyfish.jimmer.kt.ImmutableCompanion
 import org.babyfish.jimmer.sql.Column
 import org.babyfish.jimmer.sql.Entity
@@ -29,6 +30,8 @@ interface Submit : LongIdFragment {
     val compiler: Compiler
 
     val submitStatus: SubmitStatus
+
+    val message: String?
 
     companion object : ImmutableCompanion<Submit>
 
@@ -86,4 +89,14 @@ enum class SubmitStatus(val description: String) {
     MEMORY_LIMIT("Превышено ограничение по памяти"),
     RUNTIME_ERROR("Ошибка времени выполнения"),
     COMPILATION_ERROR("Ошибка компиляции"),
+}
+
+data class StudentCodeSubmit(
+    var compiler: Compiler? = null,
+    var code: String? = null,
+) {
+    fun reset() {
+        this.compiler = null
+        this.code = null
+    }
 }

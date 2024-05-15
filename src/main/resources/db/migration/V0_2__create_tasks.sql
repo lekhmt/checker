@@ -43,5 +43,6 @@ CREATE TABLE if NOT EXISTS submits (
     code bytea,
     is_single_file boolean,
     submit_status varchar(32),
-    compiler varchar(16)
+    compiler varchar(16),
+    message text
 );

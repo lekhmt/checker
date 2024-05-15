@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Инфорамция о посылке ' + ${submit.id}"></title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <style>
+        body {
+            display: grid;
+        }
+         .container {
+            display: flex;
+            align-items: start;
+            margin: 10px 5% 0 5%;
+        }
+        .main {
+            width: 60%;
+            display: grid;
+            align-items: start;
+        }
+        .back {
+            margin-top: 70px;
+            margin-left: 5%;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="general.html :: header"/>
+<a class="back" th:href="@{/portal/subjects/} + ${submit.task.subject.id} + '/' + ${submit.task.id}"
+   th:text="'Назад к ' + ${submit.task.displayName}"/>
+<div class="container">
+    <div class="main">
+        <div th:text="${submit.message}"></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package com.example.checker.datainit
 
-import com.example.checker.configuration.findAll
 import com.example.checker.entity.dto.*
 import com.example.checker.entity.tasks.Compiler
 import com.example.checker.entity.tasks.Compiler.*
@@ -17,9 +16,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import java.time.temporal.ChronoUnit.DAYS
-import java.time.temporal.ChronoUnit.WEEKS
 
 @Component
 @Transactional
@@ -63,6 +60,7 @@ class DataInit(
             description = "Лабораторная работа 1",
             visibleFrom = Instant.now().minus(7, DAYS),
             subjectId = subjectId,
+            timeLimit = 2,
             dueTo = Instant.now().plus(14, DAYS)
         )
         createTask(
@@ -103,7 +101,7 @@ class DataInit(
             File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
-            ACCEPTED
+            TESTING
         )
         createSubmit(
             2,
@@ -112,9 +110,9 @@ class DataInit(
             File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
-            TIME_LIMIT
+            TESTING
         )
-        val submitId = createSubmit(
+        val submitId1 = createSubmit(
             1,
             "stepanov@mai.ru",
             Instant.now().minus(8, DAYS),
@@ -130,7 +128,7 @@ class DataInit(
             File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
-            ACCEPTED
+            TESTING
         )
         createSubmit(
             1,
@@ -141,13 +139,13 @@ class DataInit(
             GPP_20,
             TESTING
         )
-        createSubmit(
+        val submitId2 = createSubmit(
             1,
             "stepanov@mai.ru",
             Instant.now().minus(12, DAYS),
             File("src/main/resources/files/example.java").readBytes(),
             true,
-            JAVA_21,
+            JAVA_8,
             TESTING
         )
 
@@ -162,7 +160,10 @@ class DataInit(
             File("src/main/resources/files/out_2.txt").readBytes(),
         )
 
-        runnerService.testSubmit(submitId)
+//        runnerService.testSubmit(submitId1)
+        runnerService.testSubmit(submitId2)
+
+        println()
     }
 
     private fun createGroup(

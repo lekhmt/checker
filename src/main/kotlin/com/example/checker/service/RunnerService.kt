@@ -1,12 +1,14 @@
 package com.example.checker.service
 
 import com.example.checker.entity.dto.SubmitView
-import com.example.checker.entity.tasks.Compiler.*
+import com.example.checker.entity.tasks.SubmitStatus.*
 import org.apache.commons.io.IOUtils.contentEqualsIgnoreEOL
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileInputStream
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 @Service
 class RunnerService(
@@ -15,18 +17,25 @@ class RunnerService(
 ) {
 
     fun testSubmit(submitId: Long) {
+        thread(start = true) { evaluate(submitId) }
+    }
+
+    private fun evaluate(submitId: Long) {
         val submit = tasksService.getSubmitById(submitId)
+        val task = tasksService.getTaskById(submit.task.id)
         val tests = tasksService.getTestsByTaskId(submit.task.id)
         val numberOfTests = tests.size
 
         val taskSubmitDirectoryPath = prepareDirectory(submit)
 
-        val submitFile = prepareFile(taskSubmitDirectoryPath, submit.compiler.submitFileName, submit.code)
+        prepareFile(taskSubmitDirectoryPath, submit.compiler.submitFileName, submit.code)
         if (submit.compiler.compileCommands != null) {
             val compilationErrorFile = prepareFile(taskSubmitDirectoryPath, "compilation_error.txt")
-            val compilationResult = runCommand(taskSubmitDirectoryPath, submit.compiler.compileCommands, error = compilationErrorFile)
+            val compilationResult =
+                runCompilation(taskSubmitDirectoryPath, submit.compiler.compileCommands, error = compilationErrorFile)
             if (compilationResult != 0) {
-                throw Exception("COMPILATION ERROR: ${compilationErrorFile.readText()}")
+                tasksService.updateSubmitStatus(submitId, COMPILATION_ERROR, compilationErrorFile.readText())
+                return
             }
         }
 
@@ -36,23 +45,35 @@ class RunnerService(
             val resultFile = prepareFile(taskSubmitDirectoryPath, "$i.txt")
             val errorFile = prepareFile(taskSubmitDirectoryPath, "error_$i.txt")
 
-            val resultCode = runCommand(
+            val resultCode = runEvaluation(
                 taskSubmitDirectoryPath,
                 submit.compiler.runCommands,
                 inputFile,
                 resultFile,
                 errorFile,
+                task.timeLimit,
             )
-            if (resultCode != 0) {
-                throw Exception("RUNTIME ERROR: ${errorFile.readText()}")
+            if (!resultCode) {
+                if (task.timeLimit != null) {
+                    tasksService.updateSubmitStatus(submitId, TIME_LIMIT)
+                } else {
+                    tasksService.updateSubmitStatus(submitId, RUNTIME_ERROR, "Runtime limit exceeded")
+                }
+                return
+            }
+            if (errorFile.readText().isNotEmpty()) {
+                tasksService.updateSubmitStatus(submitId, RUNTIME_ERROR, errorFile.readText())
             }
             if (!contentEqualsIgnoreEOL(
                     FileInputStream(outputFile).reader(),
                     FileInputStream(resultFile).reader(),
-            )) {
-                throw Exception("EXPECTED:\n ${outputFile.readText()}\n BUT WAS:\n ${resultFile.readText()}")
+                )
+            ) {
+                tasksService.updateSubmitStatus(submitId, WRONG_ANSWER)
+                return
             }
         }
+        tasksService.updateSubmitStatus(submitId, ACCEPTED)
     }
 
     private fun prepareDirectory(
@@ -87,13 +108,26 @@ class RunnerService(
         return file
     }
 
-    private fun runCommand(
+    private fun runCompilation(
+        workingDirectory: String,
+        command: List<String>,
+        error: File? = null,
+    ): Int {
+        var process = ProcessBuilder(*command.toTypedArray()).directory(File(workingDirectory))
+        if (error != null) {
+            process = process.redirectError(error)
+        }
+        return process.start().waitFor()
+    }
+
+    private fun runEvaluation(
         workingDirectory: String,
         command: List<String>,
         input: File? = null,
         output: File? = null,
         error: File? = null,
-    ): Int {
+        timeout: Long? = null
+    ): Boolean {
         var process = ProcessBuilder(*command.toTypedArray()).directory(File(workingDirectory))
         if (input != null && output != null && error != null) {
             process = process
@@ -103,7 +137,8 @@ class RunnerService(
         if (error != null) {
             process = process.redirectError(error)
         }
-        return process.start().waitFor()
+        val actualTimeout = timeout ?: 600L
+        return process.start().waitFor(actualTimeout, TimeUnit.SECONDS)
     }
 
 }

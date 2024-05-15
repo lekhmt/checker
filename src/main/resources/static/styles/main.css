@@ -60,3 +60,7 @@ tr {
 td {
     padding: 4px 0 4px 8px;
 }
+
+.error {
+    color: red;
+}
