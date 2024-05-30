@@ -1,0 +1,14 @@
+warning: [options] bootstrap class path not set in conjunction with -source 8
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Main.java:6: warning: as of release 10, 'var' is a restricted type name and cannot be used for type declarations or as the element type of an array
+        var in = new Scanner(System.in);
+            ^
+Main.java:6: error: cannot find symbol
+        var in = new Scanner(System.in);
+        ^
+  symbol:   class var
+  location: class Main
+1 error
+5 warnings
