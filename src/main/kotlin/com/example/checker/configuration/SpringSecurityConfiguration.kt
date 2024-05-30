@@ -31,7 +31,9 @@ class SpringSecurityConfiguration(
                 // portal
                 authorize("/portal/**", authenticated)
                 authorize("/portal/curator", hasAuthority("CURATOR"))
-
+                authorize("/portal/curator/**", hasAuthority("CURATOR"))
+                authorize("/portal/student", hasAuthority("STUDENT"))
+                authorize("/portal/student/**", hasAuthority("STUDENT"))
             }
             formLogin {
                 loginPage = "/login"

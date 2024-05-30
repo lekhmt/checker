@@ -43,6 +43,7 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
 	implementation("commons-io:commons-io:2.6")
+	implementation("net.lingala.zip4j:zip4j:2.11.5")
 
 
 	implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:${jimmerVersion}")

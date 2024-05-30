@@ -36,7 +36,7 @@
             </tr>
             <tr th:each="subject: ${subjects}">
                 <td><a th:href="@{/portal/subjects/} + ${subject.id}" th:text="${subject.name}"/></td>
-                <td th:text="${subject.description}"/>
+                <td th:text="${subject.description != null} ? ${subject.description} : '-'"/>
             </tr>
         </table>
     </div>
@@ -44,10 +44,9 @@
         <span>Список лабораторных работ</span>
         <table>
             <tr>
-                <th style="width:20%">Название</th>
-                <th style="width:20%">Предмет</th>
+                <th style="width:30%">Название</th>
+                <th style="width:25%">Предмет</th>
                 <th style="width:15%">Лимит по времени</th>
-                <th style="width:15%">Лимит по памяти</th>
                 <th style="width:15%">Выдана</th>
                 <th style="width:15%">Дата закрытия</th>
             </tr>
@@ -55,7 +54,6 @@
                 <td><a th:href="@{/portal/subjects/} + ${task.subject.id} + '/' + ${task.id}" th:text="${task.displayName}"/></td>
                 <td><a th:href="@{/portal/subjects/} + ${task.subject.id}" th:text="${task.subject.name}"/></td>
                 <td th:text="${task.timeLimit != null} ? ${task.timeLimit} + ' с' : '-'"/>
-                <td th:text="${task.memoryLimit != null} ? ${task.memoryLimit} + ' Мб' : '-'"/>
                 <td th:text="${#temporals.format(task.visibleFrom, 'dd-MM-yyyy')}"/>
                 <td th:text="${task.dueTo != null} ? ${#temporals.format(task.dueTo, 'dd-MM-yyyy')} : '-'"/>
             </tr>

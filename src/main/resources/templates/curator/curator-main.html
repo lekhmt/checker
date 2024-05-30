@@ -51,7 +51,7 @@
             </tr>
             <tr th:each="subject: ${subjects}">
                 <td><a th:href="@{/portal/subjects/} + ${subject.id}" th:text="${subject.name}"/></td>
-                <td th:text="${subject.description}"/>
+                <td th:text="${subject.description != null} ? ${subject.description} : '-'"/>
             </tr>
         </table>
     </div>

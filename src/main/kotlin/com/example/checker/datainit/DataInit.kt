@@ -54,12 +54,30 @@ class DataInit(
             listOf("М8О-406Б-20", "М8О-408Б-20"),
             listOf("curator@mai.ru")
         )
+        val da = createSubject(
+            "Дискретный анализ", null,
+            listOf("М8О-406Б-20", "М8О-408Б-20"),
+            listOf("curator@mai.ru")
+        )
+        val pod = createSubject(
+            "Параллельная обработка данных", null,
+            listOf("М8О-406Б-20", "М8О-408Б-20"),
+            listOf("curator@mai.ru")
+        )
+        val neuro = createSubject(
+            "Нейроинформатика", "Курс по архитектурам нейронных сетей",
+            listOf("М8О-406Б-20", "М8О-408Б-20"),
+            listOf("curator@mai.ru")
+        )
 
         createTask(
             displayName = "ЛР 1",
-            description = "Лабораторная работа 1",
+            goal = "Изучение основных операций.",
+            description = "Даны два числа A и B. Необходимо вычислить их произведение A*B. Чтение из стандартного ввода, запись в стандартный вывод.",
+            inputDescription = "Входные данные представляют собой два целых числа A и B, -10^9 < A, B < 10^9.",
+            outputDescription = "Выведите одно единственное число - произведение A*B.",
             visibleFrom = Instant.now().minus(7, DAYS),
-            subjectId = subjectId,
+            subjectId = da,
             timeLimit = 2,
             dueTo = Instant.now().plus(14, DAYS)
         )
@@ -78,19 +96,55 @@ class DataInit(
             memoryLimit = 128,
             dueTo = Instant.now().plus(14, DAYS)
         )
-        createTask(
+        val s = createTask(
             displayName = "Просроченная работа",
-            goal = "Вы не сдали",
-            description = "Необходимо было реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры" +
-                    "необходимо реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры" +
-                    "необходимо реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры" +
-                    "необходимо реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры необходимо реализовать тырыпыры",
-            inputDescription = "Какое-то описание ввода",
-            outputDescription = "Какое-то описание вывода",
+            goal = "Изучение основных операций",
+            description = "Даны два числа A и B. Необходимо вычислить их произведение A*B. " +
+                    "Чтение из стандартного ввода, запись в стандартный вывод",
+            inputDescription = "Входные данные представляют собой два целых числа A и B, -10^9 < A, B < 10^9.",
+            outputDescription = "Выведите одно единственное число - произведение A*B.",
             visibleFrom = Instant.now().minus(21, DAYS),
             subjectId = subjectId,
             timeLimit = 2,
             memoryLimit = 128,
+            dueTo = Instant.now().minus(7, DAYS)
+        )
+        createTask(
+            displayName = "Сортировки",
+            description = "Лабораторная работа 1",
+            visibleFrom = Instant.now().minus(5, DAYS),
+            subjectId = da,
+            dueTo = Instant.now().plus(18, DAYS)
+        )
+        createTask(
+            displayName = "Деревья",
+            description = "Лабораторная работа 2",
+            visibleFrom = Instant.now(),
+            subjectId = da,
+            dueTo = Instant.now().plus(28, DAYS)
+        )
+        createTask(
+            displayName = "Работа 1",
+            description = "ЛР 1",
+            visibleFrom = Instant.now().minus(14, DAYS),
+            subjectId = pod,
+        )
+        createTask(
+            displayName = "Работа по нейроинформатике",
+            goal = "Работа с метриками IoU, MIoU.",
+            description = "0. Гиперпараметры (модель, оптимизатор и его параметры, шедулер и имя функции ошибки) для экспериментов конфигурировать через класс-контейнер может быть `namedtuple`,`dataclass`, `pydantic.Model` или просто класс без методов (кроме __init__).\n" +
+                    "1. Написать валидацию на каждой эпохе\n" +
+                    "2. Написать расчет метрики IoU, (расчет должен быть векторным, выход тензор формы [BxC] где B - плоскость батча, С - класса)\n" +
+                    "3. Написать расчет метрики MIoU на основе IoU. Также представить IoU в среднем по датасету на последней валидации в развертке по классам.\n" +
+                    "(пользоваться уже написанным IoU)\n" +
+                    "5. Обучить модель на приемлемое качество (хотя бы 25% MIoU на валидации). (Отбирать лучшее качество на валидации, отдельные запуски логировать в clearml табличку: номер пуска: MIoU в среднем по классам)\n" +
+                    "4. Отобрать по 2 картинки на основе метрики IoU (усредненной по классам) из 3 квантилей по качеству: картинки, при ранжировании по качеству попадающие в первые 10%,  в промежутке между 15% - 25%, и 45% - 55%. (пользоваться уже написанным IoU)\n" +
+                    "5. Отобрать лучшую по качеству IoU картинку по трем выбранным классам.\n" +
+                    "6. Посчитать таблицу IoU в развертке по кадому классу для лучшей модели.\n" +
+                    "* Таблицы, картинки, и ipynb-тетрадь собрать в архив. Картинки можно просто отобразить в тетради, уже без необходимости сохранения, как и таблицы. (Кроме таблицы с запусками, её приложить в архив. Таблицы, графики и т.д. Можно забрать из clearml).\n" +
+                    "** При обучении можете попробовать другие ФО, или аугментации. Модель тоже можете поменять.",
+            visibleFrom = Instant.now().minus(21, DAYS),
+            subjectId = neuro,
             dueTo = Instant.now().minus(7, DAYS)
         )
 
@@ -101,7 +155,16 @@ class DataInit(
             File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
-            TESTING
+            ACCEPTED
+        )
+        createSubmit(
+            2,
+            "ivanov@mai.ru",
+            Instant.now().minus(20, DAYS),
+            File("src/main/resources/files/empty-file.txt").readBytes(),
+            true,
+            GPP_20,
+            WRONG_ANSWER
         )
         createSubmit(
             2,
@@ -110,7 +173,7 @@ class DataInit(
             File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
-            TESTING
+            ACCEPTED
         )
         val submitId1 = createSubmit(
             1,
@@ -119,7 +182,7 @@ class DataInit(
             File("src/main/resources/files/example.py").readBytes(),
             true,
             PYTHON3,
-            TESTING
+            ACCEPTED
         )
         createSubmit(
             3,
@@ -128,7 +191,7 @@ class DataInit(
             File("src/main/resources/files/empty-file.txt").readBytes(),
             true,
             GPP_20,
-            TESTING
+            TIME_LIMIT
         )
         createSubmit(
             1,
@@ -137,7 +200,7 @@ class DataInit(
             File("src/main/resources/files/example.cpp").readBytes(),
             true,
             GPP_20,
-            TESTING
+            RUNTIME_ERROR
         )
         val submitId2 = createSubmit(
             1,
@@ -145,8 +208,8 @@ class DataInit(
             Instant.now().minus(12, DAYS),
             File("src/main/resources/files/example.java").readBytes(),
             true,
-            JAVA_8,
-            TESTING
+            JAVA_21,
+            ACCEPTED
         )
 
         createTest(
@@ -161,7 +224,7 @@ class DataInit(
         )
 
 //        runnerService.testSubmit(submitId1)
-        runnerService.testSubmit(submitId2)
+//        runnerService.testSubmit(submitId2)
 
         println()
     }
@@ -198,7 +261,7 @@ class DataInit(
 
     private fun createSubject(
         name: String,
-        description: String,
+        description: String?,
         groups: List<String>,
         curators: List<String>,
     ) = tasksService.saveSubject(

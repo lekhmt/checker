@@ -10,7 +10,7 @@ class PasswordEncoderConfig {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
+            return BCryptPasswordEncoder()
     }
 
 }

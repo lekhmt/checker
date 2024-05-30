@@ -1,20 +1,25 @@
 package com.example.checker.controller.portal
 
 import com.example.checker.entity.dto.SubmitInput
+import com.example.checker.entity.dto.TaskInput
 import com.example.checker.entity.tasks.Compiler
+import com.example.checker.entity.tasks.CuratorTaskInfo
 import com.example.checker.entity.tasks.StudentCodeSubmit
 import com.example.checker.entity.tasks.SubmitStatus
 import com.example.checker.entity.users.Role
 import com.example.checker.service.RunnerService
 import com.example.checker.service.TasksService
 import com.example.checker.service.UserService
-import jakarta.validation.Valid
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @Controller
 @RequestMapping("/portal")
@@ -30,20 +35,78 @@ class TasksController(
         authentication: Authentication,
         model: Model
     ): String {
-        // TODO by user
-        val fullName = userService.findUserByEmail(authentication.name).fullName
-        val tasks = tasksService.getTaskBySubjectId(id)
+        injectModelFullName(model, authentication)
+        var tasks = tasksService.getTaskBySubjectId(id)
         val subject = tasksService.getSubjectById(id)
         var submits = tasksService.getSubmitsBySubjectId(id).sortedByDescending { it.submittedAt }
-        if (authentication.authorities.map { it.authority }.contains(Role.STUDENT.roleName)) {
+        val isStudent = authentication.authorities.map { it.authority }.contains(Role.STUDENT.name)
+        if (isStudent) {
             submits = submits.filter { it.student.email == authentication.name }
+            tasks = tasks.filter { it.visibleFrom.isBefore(Instant.now()) }
         }
-        model.addAttribute("fullName", fullName)
         model.addAttribute("subjectName", subject.name)
         model.addAttribute("subjectId", subject.id)
         model.addAttribute("tasks", tasks)
         model.addAttribute("submits", submits)
+        model.addAttribute("isCurator", !isStudent)
         return "tasks/subject"
+    }
+
+    @GetMapping("/subjects/{id}/create")
+    fun createTaskPage(
+        @PathVariable id: Long,
+        authentication: Authentication,
+        model: Model,
+    ): String {
+        injectModelFullName(model, authentication)
+        val subject = tasksService.getSubjectById(id)
+        model.addAttribute("taskInfo", CuratorTaskInfo())
+        model.addAttribute("subject", subject)
+        return "tasks/task-create"
+    }
+
+    @PostMapping("/subjects/{id}/create")
+    fun createTask(
+        @PathVariable id: Long,
+        authentication: Authentication,
+        @ModelAttribute taskInfo: CuratorTaskInfo,
+        model: Model,
+    ): String {
+        injectModelFullName(model, authentication)
+        val subject = tasksService.getSubjectById(id)
+        model.addAttribute("subject", subject)
+        if (taskInfo.displayName.isNullOrBlank()) {
+            model.addAttribute("displayNameNotPicked", true)
+            model.addAttribute("taskInfo", taskInfo)
+            return "tasks/task-create"
+        }
+        if (taskInfo.description.isNullOrBlank()) {
+            model.addAttribute("descriptionNotPicked", true)
+            model.addAttribute("taskInfo", taskInfo)
+            return "tasks/task-create"
+        }
+        if (taskInfo.visibleFrom.isNullOrBlank()) {
+            model.addAttribute("visibleFromNotPicked", true)
+            model.addAttribute("taskInfo", taskInfo)
+            return "tasks/task-create"
+        }
+        taskInfo.clear()
+        val createdTaskId = tasksService.saveTask(
+            TaskInput(
+                displayName = taskInfo.displayName!!,
+                goal = taskInfo.goal,
+                description = taskInfo.description!!,
+                inputDescription = taskInfo.inputDescription,
+                outputDescription = taskInfo.outputDescription,
+                timeLimit = taskInfo.timeLimit,
+                memoryLimit = taskInfo.memoryLimit,
+                visibleFrom = parseDate(taskInfo.visibleFrom)!!,
+                dueTo = parseDate(taskInfo.dueTo),
+                subject = TaskInput.TargetOf_subject(id),
+            )
+        )
+        tasksService.saveTestsForTask(createdTaskId, taskInfo.tests!!)
+        return "redirect:/portal/subjects/$id"
     }
 
     @GetMapping("/subjects/{id}/{taskId}")
@@ -70,7 +133,7 @@ class TasksController(
             model.addAttribute("compilerNotPicked", true)
             injectModelAttributes(model, id, taskId, authentication, studentCodeSubmit)
             return "tasks/task"
-        } else if(studentCodeSubmit.code.isNullOrBlank()) {
+        } else if (studentCodeSubmit.code.isNullOrBlank()) {
             model.addAttribute("codeNotProvided", true)
             injectModelAttributes(model, id, taskId, authentication, studentCodeSubmit)
             return "tasks/task"
@@ -133,6 +196,11 @@ class TasksController(
         model.addAttribute("submits", submits)
         model.addAttribute("compilers", Compiler.entries)
         model.addAttribute("studentCodeSubmit", studentCodeSubmit)
+    }
+
+    private fun parseDate(date: String?): Instant? {
+        if (date.isNullOrBlank()) return null
+        return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay().toInstant(ZoneOffset.UTC)
     }
 
 }

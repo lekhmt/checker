@@ -1,6 +1,5 @@
 package com.example.checker.controller.portal;
 
-import com.example.checker.entity.users.Role
 import com.example.checker.service.StudentGroupService
 import com.example.checker.service.TasksService
 import com.example.checker.service.UserService
@@ -22,11 +21,10 @@ class MainPageController(
         authentication: Authentication,
         model: Model
     ): String {
-        // TODO by user
-        val groups = studentGroupService.getAllGroups()
-        val fullName = userService.findUserByEmail(authentication.name).fullName
-        val subjects = taskService.getAllSubjects()
-        model.addAttribute("fullName", fullName)
+        val curator = userService.findCuratorByEmail(authentication.name)
+        val groups = studentGroupService.getGroupsByCurator(curator.id)
+        val subjects = taskService.getSubjectsByCurator(curator.id)
+        model.addAttribute("fullName", curator.user.fullName)
         model.addAttribute("groups", groups)
         model.addAttribute("subjects", subjects)
         return "curator/curator-main"
@@ -37,11 +35,10 @@ class MainPageController(
         authentication: Authentication,
         model: Model
     ): String {
-        // TODO by user
-        val fullName = userService.findUserByEmail(authentication.name).fullName
-        val tasks = taskService.getAllTasks()
-        val subjects = taskService.getAllSubjects()
-        model.addAttribute("fullName", fullName)
+        val student = userService.findStudentByEmail(authentication.name)
+        val tasks = taskService.getTasksForStudent(student.id)
+        val subjects = taskService.getSubjectsByStudent(student.id)
+        model.addAttribute("fullName", student.user.fullName)
         model.addAttribute("tasks", tasks)
         model.addAttribute("subjects", subjects)
         return "student/student-main"

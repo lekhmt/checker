@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание работы</title>
+    <link th:href="@{/styles/main.css}" rel="stylesheet">
+    <style>
+        body {
+            display: grid;
+        }
+        .container {
+            display: flex;
+            align-items: start;
+            margin: 10px 5% 0 5%;
+        }
+        .main {
+            width: 100%;
+            display: grid;
+            align-items: start;
+        }
+        span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .task-name {
+            font-size: 30px;
+        }
+        .description-block {
+            margin: 10px 10px 10px 0px;
+            display: grid;
+        }
+        .description-title {
+            font-size: 24px;
+            margin: 0 0 5px 0;
+        }
+        .back {
+            margin-top: 70px;
+            margin-left: 5%;
+        }
+        .submits-table {
+            width: 100%;
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .custom-input {
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="general.html :: header"/>
+<a class="back" th:href="@{/portal/subjects/} + ${subject.id}">Назад к списку работ</a>
+<div class="container">
+    <div class="main">
+        <form
+                action="#" th:action="@{/portal/subjects/} + ${subject.id} + '/create'"
+                th:object="${taskInfo}"
+                method="post"
+                enctype="multipart/form-data"
+        >
+            <span class="description-title">Название работы</span>
+            <span class="error" th:if="${displayNameNotPicked}">Необходимо заполнить</span>
+            <div class="description-block">
+                <textarea th:field="*{displayName}" rows="1"></textarea>
+            </div>
+            <span class="description-title">Цель работы</span>
+            <div class="description-block">
+                <textarea th:field="*{goal}" rows="10"></textarea>
+            </div>
+            <span class="description-title">Описание</span>
+            <span class="error" th:if="${descriptionNotPicked}">Необходимо заполнить</span>
+            <div class="description-block">
+                <textarea th:field="*{description}" rows="10"></textarea>
+            </div>
+            <span class="description-title">Описание входных данных</span>
+            <div class="description-block">
+                <textarea th:field="*{inputDescription}" rows="10"></textarea>
+            </div>
+            <span class="description-title">Описание выходных данных</span>
+            <div class="description-block">
+                <textarea th:field="*{outputDescription}" rows="10"></textarea>
+            </div>
+            <div class="description-title">
+                <label for="timeLimit"><span>Ограничение по времени (оставьте пустым если нет): </span></label>
+                <input type="number" id="timeLimit" name="timeLimit" min="0"/>
+            </div>
+            <div class="description-title">
+                <label for="visibleFrom"><span>Доступно с:  </span></label>
+                <input type="date" id="visibleFrom" name="visibleFrom"/>
+                <span class="error" th:if="${visibleFromNotPicked}">Необходимо выбрать</span>
+            </div>
+            <div class="description-title">
+                <label for="dueTo"><span>Срок сдачи по (оставьте пустым если бессрочно): </span></label>
+                <input type="date" id="dueTo" name="dueTo"/>
+            </div>
+            <div class="description-title">
+                <label for="tests"><span>Прикрепите архив с тестами: </span></label>
+                <input type="file" id="tests" name="tests"/>
+            </div>
+            <button type="submit">Создать</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

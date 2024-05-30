@@ -63,6 +63,7 @@ class RunnerService(
             }
             if (errorFile.readText().isNotEmpty()) {
                 tasksService.updateSubmitStatus(submitId, RUNTIME_ERROR, errorFile.readText())
+                return
             }
             if (!contentEqualsIgnoreEOL(
                     FileInputStream(outputFile).reader(),

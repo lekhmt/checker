@@ -67,6 +67,7 @@ enum class Compiler(
         runCommands = listOf("java", "-classpath", ".", "Main"),
         submitFileName = "Main.java"
     ),
+
     JAVA_21(
         description = "Java 21",
         compileCommands = listOf("javac", "-source", "21", "-target", "21", "Main.java"),
@@ -78,6 +79,7 @@ enum class Compiler(
         runCommands = listOf("python3", "main.py"),
         submitFileName = "main.py"
     )
+
 }
 
 enum class SubmitStatus(val description: String) {

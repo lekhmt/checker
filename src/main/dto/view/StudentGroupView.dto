@@ -13,4 +13,7 @@ StudentGroupView {
         name
         description
     }
+    curators {
+        id
+    }
 }

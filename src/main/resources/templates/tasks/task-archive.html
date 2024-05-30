@@ -49,6 +49,8 @@
 <div class="container">
     <div class="main">
         <span class="task-name" th:text="${task.displayName}"></span>
+        <div th:if="${task.timeLimit != null}" th:text="'Ограничение по времени: ' + ${task.timeLimit} + ' с'"/>
+        <div th:if="${task.timeLimit == null}" th:text="'Ограничение по времени: -'"/>
         <div th:if="${task.goal} != null" class="description-block">
             <span class="description-title">Цель работы</span>
             <div th:text="${task.goal}"></div>

@@ -62,9 +62,14 @@ class UserService(
         return user
     }
 
-    fun findCuratorIdByEmail(email: String) = sql.createQuery(Curator::class) {
+    fun findCuratorByEmail(email: String) = sql.createQuery(Curator::class) {
         where(table.user.email eq email)
-        select(table.id)
+        select(table.fetch(CuratorView::class))
+    }.execute().single()
+
+    fun findStudentByEmail(email: String) = sql.createQuery(Student::class) {
+        where(table.user.email eq email)
+        select(table.fetch(StudenView::class))
     }.execute().single()
 
     fun findAllUsers() = sql.findAll(UserView::class)
@@ -76,7 +81,7 @@ class UserService(
     fun getCuratorIds(emails: List<String>?): List<Long>? {
         return emails?.map {
             val id = try {
-                findCuratorIdByEmail(it)
+                findCuratorByEmail(it).id
             } catch (ex: Exception) {
                 throw UserNotFoundException(it)
             }

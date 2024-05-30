@@ -28,18 +28,9 @@ class StudentGroupService(
 
     fun getAllGroups() = sql.findAll(StudentGroupView::class)
 
-    fun addStudentInGroup(
-        groupName: String,
-        studentEmail: String,
-    ) {
-        sql.save(Student {
-            user {
-                email = studentEmail
-            }
-            group {
-                name = groupName
-            }
-        })
-    }
+    fun getGroupsByCurator(id: Long) = sql.createQuery(StudentGroup::class) {
+        where(table.curators { this.id eq id })
+        select(table.fetch(StudentGroupView::class))
+    }.execute()
 
 }
